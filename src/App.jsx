@@ -1,4 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
+// ===== META PIXEL HELPERS =====
+function track(eventName, params) {
+  try {
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("trackCustom", eventName, params || {});
+    }
+  } catch (e) {}
+}
+
+function trackStandard(eventName, params) {
+  try {
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", eventName, params || {});
+    }
+  } catch (e) {}
+}
 
 // ===== QUIZ (6 perguntas) =====
 const questions = [
@@ -167,16 +183,26 @@ export default function App() {
   );
 
   function start() {
-    setStage("quiz");
-    setCurrent(0);
-    setTotalScore(0);
-  }
+  track("StartQuiz");
+  setStage("quiz");
+  setCurrent(0);
+  setTotalScore(0);
+}
 
   function answer(score) {
-    setTotalScore((s) => s + score);
-    if (current + 1 < questions.length) setCurrent((c) => c + 1);
-    else setStage("offers");
+  setTotalScore((s) => s + score);
+
+  if (current + 1 < questions.length) {
+    // avançando perguntas
+    track(`Question_${current + 1}`, { step: current + 1 });
+    setCurrent((c) => c + 1);
+  } else {
+    // terminou o quiz
+    track("FinishQuiz");
+    trackStandard("ViewContent", { content_name: "OffersPage" });
+    setStage("offers");
   }
+}
 
   // ===== TELA 1 =====
   if (stage === "hook") {
@@ -346,9 +372,16 @@ function OfferCard({ offer }) {
         </ul>
       )}
 
-      <button style={offersStyles.buyBtn} onClick={() => (window.location.href = offer.url)}>
-        Quero esse
-      </button>
+      <button
+  style={offersStyles.buyBtn}
+  onClick={() => {
+    trackStandard("InitiateCheckout", { offer: offer.id, price: offer.newPrice });
+    track("ClickCheckout", { offer: offer.id, price: offer.newPrice });
+    window.location.href = offer.url;
+  }}
+>
+  Quero esse
+</button>
     </div>
   );
 }
