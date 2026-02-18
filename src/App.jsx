@@ -1,6 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 
 /* =========================
+   UTMIFY EVENTS (helpers)
+========================= */
+
+function utmifyTrack(event, data = {}) {
+  try {
+    // Algumas versões expõem um objeto global
+    if (window.utmify && typeof window.utmify.track === "function") {
+      window.utmify.track(event, data);
+      return;
+    }
+
+    // Fallback: dataLayer (não quebra, e algumas integrações leem daqui)
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event, ...data });
+  } catch (e) {
+    // Nunca deixa quebrar o app
+  }
+}
+
+/* =========================
    1) QUIZ (6 perguntas)
 ========================= */
 
@@ -123,7 +143,6 @@ const offers = [
 
 /* =========================
    3) DEPOIMENTOS (JPG)
-   (coloque na pasta public: maria.jpg, breno.jpg, paulo.jpg)
 ========================= */
 
 const testimonials = [
@@ -185,15 +204,24 @@ export default function App() {
   );
 
   function start() {
+    utmifyTrack("quiz_start");
     setStage("quiz");
     setCurrent(0);
     setTotalScore(0);
   }
 
   function answer(score) {
+    // calcula "na hora" pra conseguir usar no evento final sem depender do timing do state
+    const nextTotal = totalScore + score;
+
     setTotalScore((s) => s + score);
-    if (current + 1 < questions.length) setCurrent((c) => c + 1);
-    else setStage("offers");
+
+    if (current + 1 < questions.length) {
+      setCurrent((c) => c + 1);
+    } else {
+      utmifyTrack("quiz_complete", { totalScore: nextTotal, maxScore });
+      setStage("offers");
+    }
   }
 
   /* ===== TELA 1: ENTRADA com MOCKUP ===== */
@@ -202,7 +230,6 @@ export default function App() {
       <div style={styles.page}>
         <div style={styles.card}>
           <div style={styles.mockWrap}>
-            {/* coloque mockup.png dentro de /public */}
             <img src="/mockup.png" alt="Mockup da planilha" style={styles.mockImg} />
           </div>
 
@@ -306,9 +333,8 @@ function OffersPage({ totalScore, maxScore }) {
           </div>
         </div>
 
-        {/* ✅ imagem da planilha (somente a planilha, sem mockup “caixa”) */}
+        {/* imagem da planilha */}
         <div style={offersStyles.planilhaOnlyWrap}>
-          {/* coloque planilha.png dentro de /public */}
           <img src="/planilha.png" alt="Planilha" style={offersStyles.planilhaOnlyImg} />
         </div>
 
@@ -320,7 +346,6 @@ function OffersPage({ totalScore, maxScore }) {
         </div>
 
         {/* Garantia */}
-        {/* coloque garantia.png dentro de /public */}
         <img src="/garantia.png" alt="Garantia 30 dias" style={offersStyles.garantia} />
 
         {/* Depoimentos */}
@@ -347,7 +372,6 @@ function OfferCard({ offer }) {
       <div style={offersStyles.cardTitle}>{offer.title}</div>
       <div style={offersStyles.cardSubtitle}>{offer.subtitle}</div>
 
-      {/* ✅ 9:16 (vertical) igual a proporção das imagens dos cards */}
       <div style={offersStyles.cardImageWrap}>
         <img src={offer.image} alt={offer.title} style={offersStyles.cardImage} />
       </div>
@@ -368,18 +392,21 @@ function OfferCard({ offer }) {
       )}
 
       <button
-  style={offersStyles.buyBtn}
-  onClick={() => {
-    const params = window.location.search; // UTMs do anúncio
-    const url = offer.url.includes("?")
-      ? offer.url + "&" + params.replace("?", "")
-      : offer.url + params;
+        style={offersStyles.buyBtn}
+        onClick={() => {
+          // evento de clique (antes do redirect)
+          utmifyTrack("offer_click", { offerId: offer.id, offerTitle: offer.title });
 
-    window.location.href = url;
-  }}
->
-  Quero esse
-</button>
+          const params = window.location.search; // UTMs do anúncio
+          const url = offer.url.includes("?")
+            ? offer.url + "&" + params.replace("?", "")
+            : offer.url + params;
+
+          window.location.href = url;
+        }}
+      >
+        Quero esse
+      </button>
     </div>
   );
 }
@@ -563,7 +590,6 @@ const offersStyles = {
   cardTitle: { fontSize: 16, fontWeight: 900, color: "#0f172a" },
   cardSubtitle: { fontSize: 12, color: "#64748b", marginTop: 4 },
 
-  // ✅ 9:16 (vertical) para ficar proporcional às imagens em pé
   cardImageWrap: {
     width: "100%",
     marginTop: 10,
