@@ -90,7 +90,6 @@ const questions = [
 
 /* =========================
    2) OFERTAS (Kiwify links)
-   OBS: imagens 9:16 (card1/2/3)
 ========================= */
 
 const offers = [
@@ -137,7 +136,7 @@ const offers = [
       "MÉTODO S.O.M: um sistema com direção clara para pessoas comuns saírem do caos e começarem a avançar de verdade.",
       "PARCELADO NUNCA MAIS: veja quanto do seu dinheiro já está comprometido antes de parcelar, controle parcelas e saiba quando termina.",
     ],
-    highlight: true, // MAIS POPULAR
+    highlight: true,
   },
 ];
 
@@ -211,7 +210,6 @@ export default function App() {
   }
 
   function answer(score) {
-    // calcula "na hora" pra conseguir usar no evento final sem depender do timing do state
     const nextTotal = totalScore + score;
 
     setTotalScore((s) => s + score);
@@ -303,7 +301,6 @@ export default function App() {
 function OffersPage({ totalScore, maxScore }) {
   const time = useCountdown(10 * 60);
 
-  // diagnóstico (resultado)
   const perfil =
     totalScore <= 8
       ? "Seu dinheiro provavelmente está escapando sem você perceber 💸"
@@ -314,14 +311,12 @@ function OffersPage({ totalScore, maxScore }) {
   return (
     <div style={styles.page}>
       <div style={{ ...styles.card, padding: 18 }}>
-        {/* Contador */}
         <div style={offersStyles.timerWrap}>
           <div style={offersStyles.timerText}>
             GARANTA AGORA COM DESCONTO <span style={offersStyles.timer}>{time}</span>
           </div>
         </div>
 
-        {/* Título + Diagnóstico */}
         <div style={{ textAlign: "center", marginTop: 8 }}>
           <div style={offersStyles.headerTag}>ESCOLHA SUA MELHOR OPÇÃO</div>
           <div style={offersStyles.headerTitle}>Seu diagnóstico está pronto ✅</div>
@@ -333,22 +328,18 @@ function OffersPage({ totalScore, maxScore }) {
           </div>
         </div>
 
-        {/* imagem da planilha */}
         <div style={offersStyles.planilhaOnlyWrap}>
           <img src="/planilha.png" alt="Planilha" style={offersStyles.planilhaOnlyImg} />
         </div>
 
-        {/* Cards */}
         <div style={offersStyles.grid}>
           {offers.map((o, idx) => (
             <OfferCard key={idx} offer={o} />
           ))}
         </div>
 
-        {/* Garantia */}
         <img src="/garantia.png" alt="Garantia 30 dias" style={offersStyles.garantia} />
 
-        {/* Depoimentos */}
         <div style={{ marginTop: 18 }}>
           <h3 style={offersStyles.h3}>RELATOS DE QUEM ADQUIRIU</h3>
           {testimonials.map((t, i) => (
@@ -397,12 +388,17 @@ function OfferCard({ offer }) {
           // evento de clique (antes do redirect)
           utmifyTrack("offer_click", { offerId: offer.id, offerTitle: offer.title });
 
-          const params = window.location.search; // UTMs do anúncio
-          const url = offer.url.includes("?")
-            ? offer.url + "&" + params.replace("?", "")
-            : offer.url + params;
+          // ✅ repassa TODOS os params (utm_*, fbclid, gclid, etc)
+          const currentParams = new URLSearchParams(window.location.search);
+          const paramsString = currentParams.toString();
 
-          window.location.href = url;
+          let finalUrl = offer.url;
+
+          if (paramsString) {
+            finalUrl += (offer.url.includes("?") ? "&" : "?") + paramsString;
+          }
+
+          window.location.href = finalUrl;
         }}
       >
         Quero esse
