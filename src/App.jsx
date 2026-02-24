@@ -33,11 +33,7 @@ const questions = [
     options: [
       { text: "Tenho uma noção, mas nada muito organizado", score: 2, emoji: "🙋‍♂️" },
       { text: "Sim, está tudo anotado e bem claro para mim", score: 3, emoji: "😎" },
-      {
-        text: "Sinceramente, não sei… só vou gastando e vejo depois no extrato",
-        score: 1,
-        emoji: "😅",
-      },
+      { text: "Sinceramente, não sei… só vou gastando e vejo depois no extrato", score: 1, emoji: "😅" },
     ],
   },
   {
@@ -45,21 +41,9 @@ const questions = [
       'Quando o mês acaba, você tem a sensação de que o dinheiro simplesmente “sumiu”?',
     description: "Selecione uma das opções:",
     options: [
-      {
-        text: "Sim, no fim do mês quase nunca sei para onde o dinheiro foi.",
-        score: 1,
-        emoji: "😔",
-      },
-      {
-        text: "Não, acompanho tudo e sei exatamente para onde cada gasto foi.",
-        score: 3,
-        emoji: "😏",
-      },
-      {
-        text: "Às vezes tenho essa sensação, mas no geral consigo me virar e fechar o mês.",
-        score: 2,
-        emoji: "🤷‍♂️",
-      },
+      { text: "Sim, no fim do mês quase nunca sei para onde o dinheiro foi.", score: 1, emoji: "😔" },
+      { text: "Não, acompanho tudo e sei exatamente para onde cada gasto foi.", score: 3, emoji: "😏" },
+      { text: "Às vezes tenho essa sensação, mas no geral consigo me virar e fechar o mês.", score: 2, emoji: "🤷‍♂️" },
     ],
   },
   {
@@ -105,29 +89,26 @@ const questions = [
 ];
 
 /* =========================
-   2) OFERTA ÚNICA (R$19,90)
+   2) OFERTA ÚNICA (Kiwify)
 ========================= */
 
-const offers = [
-  {
-    id: "card1",
-    title: "Planilha Vida Sem Dívidas",
-    subtitle: "Acesso vitalício",
-    oldPrice: "R$97,00",
-    newPrice: "R$19,90",
-    url: "https://pay.kiwify.com.br/UXglpsq",
-    image: "/card1.png",
-    bullets: [
-      "Acesso vitalício",
-      "Atualização constante",
-      "Vídeo aula ensinando a usar",
-      "Sem mensalidade",
-      "Personalize de acordo as suas necessidades",
-      "Feita para iniciantes e experientes",
-    ],
-    highlight: true,
-  },
-];
+const offer = {
+  id: "card1",
+  title: "Planilha Vida Sem Dívidas",
+  subtitle: "Acesso vitalício",
+  oldPrice: "R$97,00",
+  newPrice: "R$19,90",
+  url: "https://pay.kiwify.com.br/UXglpsq",
+  image: "/card1.png",
+  bullets: [
+    "Acesso vitalício",
+    "Atualização constante",
+    "Vídeo aula ensinando a usar",
+    "Sem mensalidade",
+    "Personalize de acordo as suas necessidades",
+    "Feita para iniciantes e experientes",
+  ],
+};
 
 /* =========================
    3) DEPOIMENTOS (JPG)
@@ -300,14 +281,16 @@ function OffersPage({ totalScore, maxScore }) {
   return (
     <div style={styles.page}>
       <div style={{ ...styles.card, padding: 18 }}>
+        {/* Contador */}
         <div style={offersStyles.timerWrap}>
           <div style={offersStyles.timerText}>
             GARANTA AGORA COM DESCONTO <span style={offersStyles.timer}>{time}</span>
           </div>
         </div>
 
+        {/* Título + Diagnóstico */}
         <div style={{ textAlign: "center", marginTop: 8 }}>
-          <div style={offersStyles.headerTag}>OFERTA ESPECIAL</div>
+          <div style={offersStyles.headerTag}>SUA MELHOR OPÇÃO</div>
           <div style={offersStyles.headerTitle}>Seu diagnóstico está pronto ✅</div>
           <div style={offersStyles.headerSub}>
             {perfil}
@@ -317,18 +300,49 @@ function OffersPage({ totalScore, maxScore }) {
           </div>
         </div>
 
+        {/* Imagem planilha */}
         <div style={offersStyles.planilhaOnlyWrap}>
           <img src="/planilha.png" alt="Planilha" style={offersStyles.planilhaOnlyImg} />
         </div>
 
-        <div style={{ ...offersStyles.grid, gridTemplateColumns: "1fr", maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
-          {offers.map((o, idx) => (
-            <OfferCard key={idx} offer={o} />
-          ))}
+        {/* Card único */}
+        <div style={offersStyles.gridOne}>
+          <OfferCard offer={offer} />
         </div>
 
-        <img src="/garantia.png" alt="Garantia 30 dias" style={offersStyles.garantia} />
+        {/* ===== GARANTIA (NOVO BLOCO 7 DIAS) ===== */}
+        <div style={guaranteeStyles.wrap}>
+          <div style={guaranteeStyles.badge}>GARANTIA TOTAL</div>
 
+          <div style={guaranteeStyles.title}>
+            Experimente por <span style={guaranteeStyles.titleStrong}>7 dias</span> — Sem risco ✅
+          </div>
+
+          <div style={guaranteeStyles.text}>
+            Eu confio tanto que essa planilha vai te dar clareza e controle do seu dinheiro,
+            que vou te dar <strong>7 dias pra testar sem medo</strong>.
+            <br />
+            <br />
+            Se dentro de <strong>7 dias</strong> você achar que não valeu a pena, é só pedir e
+            você recebe <strong>100% do seu dinheiro de volta</strong>.
+            <br />
+            <br />
+            Sem enrolação. Sem burocracia. O risco é meu. <strong>Você só testa.</strong>
+          </div>
+
+          <div style={guaranteeStyles.footerLine}>
+            Ou você organiza sua vida financeira… <strong>ou eu devolvo o seu dinheiro.</strong>
+          </div>
+
+          {/* ✅ Use uma imagem nova: /garantia-7dias.png (coloque em /public) */}
+          <img
+            src="/garantia-7dias.png"
+            alt="Garantia 7 dias"
+            style={guaranteeStyles.image}
+          />
+        </div>
+
+        {/* Depoimentos */}
         <div style={{ marginTop: 18 }}>
           <h3 style={offersStyles.h3}>RELATOS DE QUEM ADQUIRIU</h3>
           {testimonials.map((t, i) => (
@@ -341,14 +355,8 @@ function OffersPage({ totalScore, maxScore }) {
 }
 
 function OfferCard({ offer }) {
-  const cardStyle = offer.highlight
-    ? { ...offersStyles.card, ...offersStyles.cardHighlight }
-    : offersStyles.card;
-
   return (
-    <div style={cardStyle}>
-      {offer.highlight && <div style={offersStyles.popular}>MAIS VENDIDO</div>}
-
+    <div style={offersStyles.card}>
       <div style={offersStyles.cardTitle}>{offer.title}</div>
       <div style={offersStyles.cardSubtitle}>{offer.subtitle}</div>
 
@@ -376,7 +384,7 @@ function OfferCard({ offer }) {
         onClick={() => {
           utmifyTrack("offer_click", { offerId: offer.id, offerTitle: offer.title });
 
-          // ✅ repassa TODOS os params (utm_*, fbclid, gclid, etc)
+          // repassa TODOS os params (utm_*, fbclid, gclid, etc)
           const currentParams = new URLSearchParams(window.location.search);
           const paramsString = currentParams.toString();
 
@@ -473,12 +481,7 @@ const styles = {
     cursor: "pointer",
   },
 
-  topRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
+  topRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 },
   stepPill: {
     fontSize: 12,
     fontWeight: 800,
@@ -488,14 +491,7 @@ const styles = {
     borderRadius: 999,
   },
   stepPct: { fontSize: 12, fontWeight: 800, color: "#16a34a" },
-  progressBar: {
-    width: "100%",
-    height: 8,
-    background: "#e2e8f0",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginBottom: 18,
-  },
+  progressBar: { width: "100%", height: 8, background: "#e2e8f0", borderRadius: 10, overflow: "hidden", marginBottom: 18 },
   progressFill: { height: "100%", background: "#16a34a", transition: "width 0.25s ease" },
 
   qTitle: { fontSize: 17, marginBottom: 10, color: "#0f172a", lineHeight: 1.35 },
@@ -531,14 +527,7 @@ const offersStyles = {
     fontWeight: 900,
     letterSpacing: 0.3,
   },
-  timer: {
-    marginLeft: 8,
-    padding: "4px 8px",
-    borderRadius: 999,
-    background: "#16a34a",
-    color: "white",
-    fontWeight: 900,
-  },
+  timer: { marginLeft: 8, padding: "4px 8px", borderRadius: 999, background: "#16a34a", color: "white", fontWeight: 900 },
 
   headerTag: {
     display: "inline-block",
@@ -563,11 +552,13 @@ const offersStyles = {
   },
   planilhaOnlyImg: { width: "100%", height: "auto", display: "block", borderRadius: 18 },
 
-  grid: {
+  // ✅ um card só
+  gridOne: {
     marginTop: 18,
     display: "grid",
     gap: 14,
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+    gridTemplateColumns: "minmax(260px, 520px)",
+    justifyContent: "center",
     alignItems: "start",
   },
 
@@ -581,19 +572,6 @@ const offersStyles = {
     boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
     display: "flex",
     flexDirection: "column",
-  },
-  cardHighlight: { border: "2px solid #7c3aed", boxShadow: "0 14px 30px rgba(124,58,237,0.18)" },
-  popular: {
-    position: "absolute",
-    top: -10,
-    left: "50%",
-    transform: "translateX(-50%)",
-    background: "#7c3aed",
-    color: "white",
-    fontWeight: 900,
-    fontSize: 12,
-    padding: "6px 10px",
-    borderRadius: 999,
   },
 
   cardTitle: { fontSize: 16, fontWeight: 900, color: "#0f172a" },
@@ -612,25 +590,12 @@ const offersStyles = {
   },
   cardImage: { width: "100%", height: "100%", objectFit: "cover", display: "block" },
 
-  priceBox: {
-    marginTop: 12,
-    borderRadius: 14,
-    padding: 12,
-    background: "#f8fafc",
-    border: "1px solid #e5e7eb",
-  },
+  priceBox: { marginTop: 12, borderRadius: 14, padding: 12, background: "#f8fafc", border: "1px solid #e5e7eb" },
   oldPrice: { fontSize: 12, color: "#6b7280", textDecoration: "line-through" },
   newPrice: { marginTop: 6, fontSize: 20, fontWeight: 900, color: "#0f172a" },
 
   bullets: { listStyle: "none", padding: 0, margin: "12px 0 0 0" },
-  bulletItem: {
-    fontSize: 12,
-    color: "#334155",
-    marginTop: 8,
-    lineHeight: 1.35,
-    whiteSpace: "normal",
-    wordBreak: "break-word",
-  },
+  bulletItem: { fontSize: 12, color: "#334155", marginTop: 8, lineHeight: 1.35, whiteSpace: "normal", wordBreak: "break-word" },
 
   buyBtn: {
     width: "100%",
@@ -645,20 +610,65 @@ const offersStyles = {
     marginTop: "auto",
   },
 
-  garantia: { width: "100%", maxWidth: 240, display: "block", margin: "16px auto 0 auto" },
-
   h3: { fontSize: 13, letterSpacing: 0.6, margin: "0 0 10px 0", textAlign: "center" },
 
-  testimonial: {
-    border: "1px solid #e5e7eb",
-    background: "#ffffff",
-    borderRadius: 14,
-    padding: 14,
-    marginTop: 10,
-    textAlign: "left",
-  },
+  testimonial: { border: "1px solid #e5e7eb", background: "#ffffff", borderRadius: 14, padding: 14, marginTop: 10, textAlign: "left" },
   testHeader: { display: "flex", alignItems: "center", gap: 10 },
   avatar: { width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "1px solid #e5e7eb" },
   testName: { fontWeight: 900, color: "#111827", fontSize: 14, lineHeight: 1.2 },
   testRole: { color: "#64748b", fontSize: 12, marginTop: 2 },
+};
+
+/* =========================
+   GARANTIA (7 dias)
+========================= */
+
+const guaranteeStyles = {
+  wrap: {
+    marginTop: 18,
+    borderRadius: 18,
+    border: "1px solid #e5e7eb",
+    background: "#ffffff",
+    padding: 18,
+    textAlign: "center",
+    boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
+  },
+  badge: {
+    display: "inline-block",
+    padding: "6px 12px",
+    borderRadius: 10,
+    background: "#7c3aed", // roxo
+    color: "white",
+    fontSize: 12,
+    fontWeight: 900,
+    letterSpacing: 0.3,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 900,
+    color: "#0f172a",
+    lineHeight: 1.25,
+    marginBottom: 10,
+  },
+  titleStrong: { color: "#7c3aed" },
+  text: {
+    maxWidth: 780,
+    margin: "0 auto",
+    fontSize: 14,
+    color: "#334155",
+    lineHeight: 1.6,
+  },
+  footerLine: {
+    marginTop: 12,
+    fontSize: 14,
+    color: "#0f172a",
+  },
+  image: {
+    width: "100%",
+    maxWidth: 520,
+    display: "block",
+    margin: "14px auto 0 auto",
+    borderRadius: 14,
+  },
 };
