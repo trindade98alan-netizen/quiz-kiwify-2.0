@@ -31,11 +31,46 @@
       document.head.appendChild(a);
     </script>
 
+    <style>
+      footer {
+        text-align: center;
+        padding: 20px;
+        font-family: sans-serif;
+        font-size: 12px;
+        color: #666;
+        background-color: transparent;
+      }
+      footer a {
+        color: #666;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+      .copyright {
+        margin-top: 10px;
+        display: block;
+      }
+    </style>
   </head>
 
   <body>
 
     <div id="root"></div>
+
+    <footer>
+      <div class="links">
+        <a href="termos.html" target="_blank">Termos de Uso</a> | 
+        <a href="privacidade.html" target="_blank">Política de Privacidade</a>
+      </div>
+      <span class="copyright">
+        &copy; 2026 Titan Ads - Alan Santos Trindade. Todos os direitos reservados.
+      </span>
+      <p style="font-size: 10px; margin-top: 15px; line-height: 1.4; max-width: 600px; margin-left: auto; margin-right: auto;">
+        Este site não faz parte do site do TikTok ou da ByteDance Ltd. Além disso, este site NÃO é endossado pelo TikTok de nenhuma maneira. TIKTOK é uma marca comercial da ByteDance Ltd.
+      </p>
+    </footer>
 
     <script type="module" src="/src/main.jsx"></script>
 
